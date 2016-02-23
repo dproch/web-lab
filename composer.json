@@ -1,0 +1,20 @@
+{
+    "name": "munspel/web-lab",
+    "description": "Exemple 1. Simple composer packege",
+    "require": {
+        "twig/twig": "^1.24"
+    },
+    "authors": [
+        {
+            "name": "Andrey Lisnyak",
+            "email": "munspel@ukr.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    
+    "autoload":{
+        "psr-4":{
+            "WebLab\\":"core/"
+        }
+    }
+}

@@ -2,15 +2,25 @@
 
 namespace WebLab;
 
+use Twig_Autoloader;
+use Twig_Loader_Filesystem;
+use Twig_Environment;
+use Exception;
+
 /**
- * Core - test core app class
+ * Core - test core app class. Singelton.
  * @author Andrey Lisnyak <munspel@ukr.net>
  */
 class Core {
 
     protected $BASE_DIR = "";
-    protected $BASE_URL = "";
     protected $config = array();
+
+    /**
+     *
+     * @var Twig_Environment 
+     */
+    protected $twig = null;
 
     /**
      * Статическая переменная, в которой мы
@@ -64,7 +74,7 @@ class Core {
     }
 
     /**
-     * 
+     * Run the app
      * @param type $config
      */
     public function run($config) {
@@ -80,20 +90,28 @@ class Core {
     }
 
     /**
-     * 
+     * Base app method
      * @param type $uri
      */
     protected function handleRequest($uri) {
-        if (empty($uri)) {
-            $uri = $this->config["DefaultRoute"];
-        }
-        $request = explode('/', $uri);
-        $className = '\\WebLab\\Controllers\\' . ucfirst(array_shift($request));
-        $actionName = "do" . ucfirst(array_shift($request));
-        $controller = new $className();
-        $controller->init($this);
-        if (method_exists($controller, $actionName)) {
-            $controller->{$actionName}();
+        try {
+            if (empty($uri)) {
+                $uri = $this->config["DefaultRoute"];
+            }
+            $request = explode('/', $uri);
+            $className = '\\WebLab\\Controllers\\' . ucfirst(array_shift($request));
+            $actionName = "do" . ucfirst(array_shift($request));
+            if (class_exists($className)) {
+                $controller = new $className();
+                $controller->init($this);
+                if (method_exists($controller, $actionName)) {
+                    $controller->{$actionName}();
+                }
+            } else {
+                throw new Exception("Controller class $className does not exist!");
+            }
+        } catch (Exception $ex) {
+            echo $this->getTwig()->render("error.tpl.php", ["msg" => $ex->getMessage(), "trace" => $ex->getTraceAsString()]);
         }
     }
 
@@ -102,6 +120,51 @@ class Core {
      */
     public function getSiteName() {
         return $this->config["SiteName"];
+    }
+
+    public function log($error_msg) {
+        trigger_error($error_msg, E_USER_ERROR);
+    }
+
+    /**
+     * Return twig object
+     * @return Twig_Environment
+     */
+    public function getTwig() {
+        if (empty($this->twig)) {
+            try {
+                Twig_Autoloader::register(true);
+                $loader = new Twig_Loader_Filesystem($this->config["components"]["twig"]["template_path"]);
+                $this->twig = new Twig_Environment($loader, array(
+                    'cache' => $this->config["components"]["twig"]["cache_path"],
+                    'debug' => true,
+                ));
+            } catch (Exception $ex) {
+                $this->log($ex->getMessage());
+            }
+        }
+        return $this->twig;
+    }
+
+    /**
+     * Suppose, you are browsing in your localhost 
+     * http://localhost/myproject/index.php?id=8
+     */
+    function getBaseUrl() {
+        // output: /myproject/index.php
+        $currentPath = $_SERVER['PHP_SELF'];
+
+        // output: Array ( [dirname] => /myproject [basename] => index.php [extension] => php [filename] => index ) 
+        $pathInfo = pathinfo($currentPath);
+
+        // output: localhost
+        $hostName = $_SERVER['HTTP_HOST'];
+
+        // output: http://
+        $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"], 0, 5)) == 'https://' ? 'https://' : 'http://';
+
+        // return: http://localhost/myproject/
+        return $protocol . $hostName . $pathInfo['dirname'] . "/";
     }
 
 }

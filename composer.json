@@ -1,8 +1,9 @@
 {
     "name": "munspel/web-lab",
-    "description": "Exemple 1. Simple composer packege",
+    "description": "Exemple 4. ELOQUENT ORM",
     "require": {
-        "twig/twig": "^1.24"
+        "twig/twig": "^1.24",
+        "illuminate/database": "*"
     },
     "authors": [
         {
@@ -11,10 +12,9 @@
         }
     ],
     "minimum-stability": "dev",
-    
-    "autoload":{
-        "psr-4":{
-            "WebLab\\":"core/"
+    "autoload": {
+        "psr-4": {
+            "WebLab\\": "core/"
         }
     }
 }

@@ -10,7 +10,7 @@
         <!-- Bootstrap -->
         <!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <!-- Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
@@ -22,20 +22,27 @@
         <![endif]-->
     </head>
     <body>
-        <div class="container">
-        <h1>Hello, world!</h1>
-         <div id="sidebar">
-            {% block sidebar %}
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/blog">Blog</a></li>
-            </ul>
-            {% endblock %}
-        </div>
+        {% include 'top_menu.tpl.php'%}
+        <div class="jumbotron">
+            <div class="container">
+                <h1>WEB-LAB Simple framework</h1>
 
-        <div id="content">
+                <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+               
+            </div>
+        </div>
+        <div class="container">
+           
+        <main id="content">
+
             {% block content %}Тут текст Вашей страницы!!!{% endblock %}
-        </div>
-        </div>
-    </body>
+
+        </main>
+        <hr>
+        <footer>
+            <p>© 2015 Matmod, Inc.</p>
+        </footer>
+
+    </div>
+</body>
 </html>

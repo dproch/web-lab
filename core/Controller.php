@@ -11,7 +11,19 @@ class Controller {
      * @var Core 
      */
     protected $app;
-    protected $menu = [];
+    /**
+     * Example 
+     * [
+     *  [
+     *    "route"=>"site/index",
+     *    "caption"=>"Link",
+     *     ...
+     *  ]
+     * ...
+     * }
+     * @var array 
+     */
+    protected $menu;
     protected $title = "";
 
     /**
@@ -24,11 +36,15 @@ class Controller {
 
     public function render($name, $data = array(), $return = false) {
         $twig = $this->app->getTwig();
-        $res = $twig->render("$name.tpl.php", array_merge(["title" => $this->title], $data));
+        $res = $twig->render("$name.tpl.php", array_merge(["title" => $this->title, 'menu'=>$this->menu ], $data));
         if ($return) {
             return $res;
         }
         echo $res;
+    }
+    
+    public function __construct() {
+        $this->menu = Components\Menu::getMenuTree();
     }
 
 }

@@ -6,6 +6,7 @@ use Twig_Autoloader;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 use Exception;
+use Illuminate\Database\Capsule\Manager as Capsule;
 
 /**
  * Core - test core app class. Singelton.
@@ -15,6 +16,12 @@ class Core {
 
     protected $BASE_DIR = "";
     protected $config = array();
+
+    /**
+     * @var Illuminate\Database\Capsule\Manager
+     * @link http://laravel.su/docs/5.0/eloquent 
+     */
+    protected $capsule;
 
     /**
      *
@@ -78,12 +85,16 @@ class Core {
      * @param type $config
      */
     public function run($config) {
+        
+        
 
         if (is_file($config)) {
             $this->config = include $config;
         } else {
             // load default config   
         }
+        $this->bootstrap();
+        
         $route = !empty($_REQUEST['q']) ? trim($_REQUEST['q']) : '';
 
         $this->handleRequest($route);
@@ -165,6 +176,25 @@ class Core {
 
         // return: http://localhost/myproject/
         return $protocol . $hostName . $pathInfo['dirname'] . "/";
+    }
+    /**
+     * Load app components
+     */
+    protected function bootstrap() {
+        $this->capsule = new Capsule;
+
+        $this->capsule->addConnection(array(
+            'driver' => 'mysql',
+            'host' => 'localhost',
+            'database' => 'web_lab',
+            'username' => 'mysql',
+            'password' => 'mysql',
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => ''
+        ));
+
+        $this->capsule->bootEloquent();
     }
 
 }

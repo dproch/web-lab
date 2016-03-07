@@ -79,14 +79,32 @@ class Core {
         // возвращаем созданный или существующий экземпляр
         return self::$_instance;
     }
+    /**
+     * Parse $_SERVER["QUERY_STRING"]
+     * @return route
+     * @throws Exception
+     */
+    protected function getRoute() {
+        $mathes = null;
+        $query = $_SERVER["QUERY_STRING"];
+        
+        if (empty($query)) {
+            $query = "q=" . $this->config["DefaultRoute"];
+        }
+       
+        $is_mathed = preg_match('/^q=(?<route>(?<controller>\\w+)\\/(?<action>\\w+)(\\/\\w+)*)([?&]?(?<param>.*))/', $query, $mathes);
+        if (!$is_mathed || empty($mathes["controller"]) || empty($mathes["action"])) {
+            throw new Exception("Не верный формат запроса!");
+        }
+       
+        return $mathes["route"];
+    }
 
     /**
      * Run the app
      * @param type $config
      */
     public function run($config) {
-        
-        
 
         if (is_file($config)) {
             $this->config = include $config;
@@ -94,8 +112,8 @@ class Core {
             // load default config   
         }
         $this->bootstrap();
-        
-        $route = !empty($_REQUEST['q']) ? trim($_REQUEST['q']) : '';
+
+        $route = $this->getRoute();
 
         $this->handleRequest($route);
     }
@@ -116,7 +134,11 @@ class Core {
                 $controller = new $className();
                 $controller->init($this);
                 if (method_exists($controller, $actionName)) {
-                    $controller->{$actionName}();
+                    $params = array();
+                    while (count($request) > 0) {
+                        $params[] = array_shift($request);
+                    }
+                    call_user_func_array(array($controller, $actionName), $params);
                 }
             } else {
                 throw new Exception("Controller class $className does not exist!");
@@ -177,6 +199,7 @@ class Core {
         // return: http://localhost/myproject/
         return $protocol . $hostName . $pathInfo['dirname'] . "/";
     }
+
     /**
      * Load app components
      */
@@ -195,6 +218,10 @@ class Core {
         ));
 
         $this->capsule->bootEloquent();
+
+
+        \PhpConsole\Connector::getInstance()->setServerEncoding('cp1251');
+        \PhpConsole\Helper::register();
     }
 
 }

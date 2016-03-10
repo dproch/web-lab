@@ -204,18 +204,10 @@ class Core {
      * Load app components
      */
     protected function bootstrap() {
+        session_start();
         $this->capsule = new Capsule;
 
-        $this->capsule->addConnection(array(
-            'driver' => 'mysql',
-            'host' => 'localhost',
-            'database' => 'web_lab',
-            'username' => 'mysql',
-            'password' => 'mysql',
-            'charset' => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix' => ''
-        ));
+        $this->capsule->addConnection($this->config["components"]["db"]);
 
         $this->capsule->bootEloquent();
 

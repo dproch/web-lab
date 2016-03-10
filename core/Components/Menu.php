@@ -9,7 +9,7 @@ class Menu extends Model {
     protected $table = "main_menu";
     
     public static function getMenuTree(){
-        $current = trim($_GET["q"]);
+        $current = !empty($_GET["q"])?$_GET["q"]:"site/index";
         $menu = self::where("pid", "0")->get();
         $res = array();
         foreach($menu as $item){

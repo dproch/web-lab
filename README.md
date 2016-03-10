@@ -1,6 +1,7 @@
 # web-lab
 Для разворачивания проекта:
 - выполнить команду git clone https://github.com/lisnayk/web-lab.git
+- composer global require "fxp/composer-asset-plugin:~1.1"  https://github.com/francoispluchino/composer-asset-plugin/blob/HEAD/Resources/doc/index.md
 - composer install
 
 http://www.edzynda.com/use-laravels-eloquent-orm-outside-of-laravel/

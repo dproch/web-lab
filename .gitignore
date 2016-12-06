@@ -5,3 +5,9 @@ composer.lock
 core/Templates/cache/*
 /nbproject/*
 /web/userfiles/*
+
+/web/images/middle/*
+/web/images/origin/*
+/web/images/small/*
+
+!.gitignore

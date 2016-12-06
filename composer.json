@@ -8,7 +8,8 @@
         "npm-asset/bootstrap": "dev-master",
         "npm-asset/jquery": "1.9.x",
         "npm-asset/ckeditor": "4.5.x",
-        "npm-asset/jquery-validation": "1.15.x"
+        "npm-asset/jquery-validation": "1.15.x",
+        "intervention/image": "^2.3"
     },
     "extra": {
         "asset-installer-paths": {
